@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>함께 걷는 마음 상담</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div class="page">
+			<header class="page__header">
+				<p class="page__badge" aria-hidden="true">친구</p>
+				<h1>함께 걷는 상담실</h1>
+				<p class="page__subtitle">
+					요즘 마음이 어때? 편하게 메세지를 남겨주면 대답해줄게.
+				</p>
+			</header>
+
+					<main class="page__main" id="main" role="main">
+						<section class="chat-window" aria-live="polite" aria-label="대화 내용">
+							<ul id="messages" class="chat-window__list">
+								<li class="bubble bubble--assistant">
+									<span class="bubble__meta">친구</span>
+									<p class="bubble__text">
+										안녕. 오늘 하루는 어땠어? 궁금한거나 나누고 싶은 이야기를 편하게 들려줘.
+									</p>
+								</li>
+							</ul>
+						</section>
+
+						<form id="chat-form" class="composer" autocomplete="off">
+							<label class="composer__label" for="question">
+								메시지 입력
+							</label>
+							<div class="composer__field">
+								<textarea
+									id="question"
+									class="composer__input"
+									name="question"
+									rows="2"
+									placeholder="메시지를 입력하세요"
+									required
+									aria-describedby="chat-help"
+								></textarea>
+								<button type="submit" id="send" class="composer__send" aria-label="메시지 보내기">
+									보내기
+								</button>
+							</div>
+							<p id="chat-help" class="composer__help">
+								대화내용을 입력 후 보내기 버튼을 누르시면 대화를 이어갈 수 있어.
+							</p>
+						</form>
+					</main>
+
+			<footer class="page__footer">
+			</footer>
+		</div>
+
+		<script src="app.js" defer></script>
+	</body>
+</html>
