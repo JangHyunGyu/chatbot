@@ -4,41 +4,30 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Walk with me</title>
-		<!-- 소셜 미리보기와 검색 결과에 사용되는 기본 메타데이터 -->
 		<meta name="description" content="Walk with me - Choose a friend and share how you're feeling." />
 		<meta property="og:title" content="Walk with me" />
 		<meta property="og:description" content="Choose a caring friend to chat with and feel heard." />
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		<!-- 전체 앱을 감싸는 래퍼: 모바일 기기 카드 형태를 흉내낸다 -->
 		<div class="app">
-			<!-- 상단 헤더: 앱 타이틀과 배경 그래디언트를 표시 -->
 			<header class="app__header" role="banner">
-				<!-- 사용자에게 보이는 서비스 이름 -->
 				<h1 class="app__title">Walk with me</h1>
 			</header>
 
-			<!-- 채팅 로그가 표시되는 메인 영역: app.js에서 동적으로 메시지를 채운다 -->
 			<main class="app__main" id="main" role="main">
 				<ul id="messages" class="chat" aria-live="polite" aria-label="대화 내용">
-					<!-- 초기 안내 메시지: 사용자가 들어오자마자 안내를 볼 수 있도록 기본 추가 -->
 					<li class="message message--assistant">
-						<!-- 말풍선 옆에 표시되는 어시스턴트 아바타 -->
 						<span class="message__avatar" aria-hidden="true">😊</span>
 						<div class="message__bubble">
-							<!-- 화자 이름 라벨 -->
 							<span class="message__meta">친구</span>
-							<!-- 실제 대화 텍스트 본문 -->
 							<p class="message__text">안녕! 궁금한게 있거나 상담하고 싶은게 있으면 편하게 얘기해 줘.</p>
 						</div>
 					</li>
 				</ul>
 			</main>
 
-			<!-- 메시지 입력 영역: 텍스트 입력창과 전송 버튼으로 구성 -->
 			<form id="chat-form" class="composer" autocomplete="off">
-				<!-- 스크린리더 사용자에게 입력 용도를 안내하는 라벨 -->
 				<label class="composer__label" for="question">메시지 입력</label>
 				<div class="composer__field">
 					<textarea
@@ -49,7 +38,6 @@
 						placeholder="메시지를 입력하세요..."
 						required
 					></textarea>
-					<!-- 메시지 전송 버튼: 접근성을 위해 aria-label 제공 -->
 					<button type="submit" id="send" class="composer__send" aria-label="메시지 보내기">
 						<span aria-hidden="true">➤</span>
 					</button>
@@ -57,7 +45,6 @@
 			</form>
 		</div>
 
-		<!-- 클라이언트 측 채팅 로직 스크립트 -->
 		<script src="app.js" defer></script>
 	</body>
 </html>
