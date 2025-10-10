@@ -239,6 +239,10 @@ form.addEventListener("submit", async (event) => {
 
   // 응답을 기다리는 동안 전송 버튼을 비활성화합니다.
   submitButton.disabled = true;
+  // 생각중 상태에서는 입력창 자체도 비활성화해 추가 입력을 막습니다.
+  questionField.disabled = true;
+  // 잠금 상태 스타일을 적용해 사용자에게 입력 불가임을 알립니다.
+  form.classList.add("composer--locked");
   // textarea 내용을 비우고 높이를 다시 계산합니다.
   questionField.value = "";
   handleComposerResize();
@@ -285,5 +289,8 @@ form.addEventListener("submit", async (event) => {
   } finally {
     // 요청 완료 후 전송 버튼을 다시 활성화합니다.
     submitButton.disabled = false;
+    // 입력창 잠금을 해제하고 다시 입력할 수 있도록 합니다.
+    questionField.disabled = false;
+    form.classList.remove("composer--locked");
   }
 });
