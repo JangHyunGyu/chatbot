@@ -75,8 +75,8 @@ export default {
     }
 
     // 옵션 오버라이드 허용(없으면 기본값)
-    const model = (body?.model || "gpt-5").trim();
-    //const model = (body?.model || "gpt-5-mini-2025-08-07").trim();
+    //const model = (body?.model || "gpt-5").trim();
+    const model = (body?.model || "gpt-5-mini").trim();
 
     // OpenAI 호출
     const upstream = await fetch("https://api.openai.com/v1/chat/completions", {
