@@ -17,8 +17,14 @@ const systemPrompt = {
 
 let conversation = [systemPrompt];
 
-function scrollToBottom() {
-  messagesList.lastElementChild?.scrollIntoView({ behavior: "smooth", block: "end" });
+function scrollToBottom({ smooth = true } = {}) {
+  const behavior = smooth ? "smooth" : "auto";
+
+  requestAnimationFrame(() => {
+    messagesList.lastElementChild?.scrollIntoView({ behavior, block: "end" });
+    // Fallback to direct scroll positioning to ensure alignment in all browsers
+    messagesList.scrollTop = messagesList.scrollHeight;
+  });
 }
 
 function createBubble(role, text) {
