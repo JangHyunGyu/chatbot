@@ -7,6 +7,8 @@ const MAX_HISTORY = 12; // user+assistant pairs (excluding system message)
 const form = document.getElementById("chat-form");
 // 사용자가 텍스트를 입력하는 textarea 요소를 가져옵니다.
 const questionField = document.getElementById("question");
+// 초기 placeholder 문구를 저장해 두었다가 나중에 복원합니다.
+const originalPlaceholder = questionField.getAttribute("placeholder");
 // 메시지를 전송하는 버튼 요소를 가져옵니다.
 const submitButton = document.getElementById("send");
 // 채팅 메시지를 출력하는 UL 요소를 가져옵니다.
@@ -241,6 +243,8 @@ form.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
   // 생각중 상태에서는 입력창 자체도 비활성화해 추가 입력을 막습니다.
   questionField.disabled = true;
+  // 사용자가 기다리는 상황임을 안내하는 placeholder 문구로 교체합니다.
+  questionField.setAttribute("placeholder", "친구가 답변을 생각하고 있어. 잠시 기다려줘");
   // 잠금 상태 스타일을 적용해 사용자에게 입력 불가임을 알립니다.
   form.classList.add("composer--locked");
   // textarea 내용을 비우고 높이를 다시 계산합니다.
@@ -270,7 +274,7 @@ form.addEventListener("submit", async (event) => {
       appendMessage("assistant", reply);
     } else {
       // 응답이 비어있다면 에러 메시지를 대신 보여줍니다.
-      appendMessage("assistant", "죄송해요. 지금은 답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.");
+      appendMessage("assistant", "미안. 지금은 답변을 가져오지 못했어. 잠시 후 다시 시도해 줄래.");
     }
   } catch (error) {
     // 오류가 나면 임시 말풍선을 제거하여 화면을 정리합니다.
@@ -291,6 +295,8 @@ form.addEventListener("submit", async (event) => {
     submitButton.disabled = false;
     // 입력창 잠금을 해제하고 다시 입력할 수 있도록 합니다.
     questionField.disabled = false;
+    // 원래 placeholder 문구를 되돌려 사용자가 다시 입력할 수 있게 합니다.
+    questionField.setAttribute("placeholder", originalPlaceholder);
     form.classList.remove("composer--locked");
   }
 });
