@@ -23,17 +23,32 @@ function scrollToBottom() {
 
 function createBubble(role, text) {
   const item = document.createElement("li");
-  item.className = `bubble bubble--${role}`;
+  item.className = `message message--${role}`;
+
+  const avatar = document.createElement("span");
+  avatar.className = "message__avatar";
+  avatar.setAttribute("aria-hidden", "true");
+  avatar.textContent = role === "user" ? "🙂" : "😊";
+
+  const bubble = document.createElement("div");
+  bubble.className = "message__bubble";
 
   const meta = document.createElement("span");
-  meta.className = "bubble__meta";
+  meta.className = "message__meta";
   meta.textContent = role === "user" ? "나" : "친구";
 
   const body = document.createElement("p");
-  body.className = "bubble__text";
+  body.className = "message__text";
   body.textContent = text;
 
-  item.append(meta, body);
+  bubble.append(meta, body);
+
+  if (role === "user") {
+    item.append(bubble, avatar);
+  } else {
+    item.append(avatar, bubble);
+  }
+
   return item;
 }
 
@@ -104,7 +119,7 @@ form.addEventListener("submit", async (event) => {
   handleComposerResize();
 
   const thinkingBubble = createBubble("assistant", "생각중…");
-  thinkingBubble.classList.add("bubble--thinking");
+  thinkingBubble.classList.add("message--thinking");
   messagesList.appendChild(thinkingBubble);
   scrollToBottom();
 
