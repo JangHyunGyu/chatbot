@@ -15,6 +15,8 @@ const submitButton = document.getElementById("send");
 const messagesList = document.getElementById("messages");
 // 루트 문서 요소를 참조하여 CSS 커스텀 속성을 제어합니다.
 const root = document.documentElement;
+// 로컬 스토리지에 대화를 저장할 때 사용할 키 값을 정의합니다.
+const STORAGE_KEY = "walkwithme:conversation";
 
 // 시스템 프롬프트는 모델의 기본 역할과 말투를 지정하는 초기 메시지입니다.
 const systemPrompt = {
@@ -120,6 +122,61 @@ function appendMessage(role, text) {
   scrollToBottom();
 }
 
+// 현재 대화 내용을 로컬 스토리지에 안전하게 저장합니다.
+function persistConversation() {
+  try {
+    // 시스템 프롬프트를 제외한 최근 대화만 저장해 용량을 관리합니다.
+    const history = conversation.filter((msg) => msg.role !== "system").slice(-MAX_HISTORY * 2);
+    // 로컬 스토리지가 없거나 접근이 불가능한 환경을 대비합니다.
+    if (!window?.localStorage) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ messages: history })
+    );
+  } catch (error) {
+    // 저장 중 문제가 생겨도 앱 동작은 유지하고 콘솔에만 경고합니다.
+    console.warn("대화를 저장하지 못했어요:", error);
+  }
+}
+
+// 저장된 대화가 있다면 불러와 화면과 메모리에 반영합니다.
+function hydrateConversation() {
+  try {
+    if (!window?.localStorage) {
+      return;
+    }
+
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return;
+    }
+
+    const parsed = JSON.parse(raw);
+    const storedMessages = Array.isArray(parsed?.messages)
+      ? parsed.messages.filter((msg) => typeof msg?.role === "string" && typeof msg?.content === "string")
+      : [];
+
+    if (!storedMessages.length) {
+      return;
+    }
+
+    const limitedMessages = storedMessages.slice(-MAX_HISTORY * 2);
+    conversation = [systemPrompt, ...limitedMessages];
+
+    messagesList.innerHTML = "";
+    limitedMessages.forEach(({ role, content }) => {
+      messagesList.appendChild(createBubble(role, content));
+    });
+
+    scrollToBottom({ smooth: false });
+  } catch (error) {
+    console.warn("저장된 대화를 불러오지 못했어요:", error);
+  }
+}
+
 // 서버에 보낼 메시지 배열을 구성합니다.
 function buildPayload() {
   // 최신 대화 MAX_HISTORY 쌍만 남기도록 잘라냅니다.
@@ -172,6 +229,9 @@ function handleComposerResize() {
 
 // 페이지 로드 시점에 뷰포트 관련 CSS 변수를 초기화합니다.
 updateViewportVars();
+
+// 이전 대화가 저장되어 있다면 불러와서 화면에 표시합니다.
+hydrateConversation();
 
 // 뷰포트 변경 시 실행할 콜백을 화살표 함수로 정의합니다.
 const handleViewportChange = () => {
@@ -238,6 +298,8 @@ form.addEventListener("submit", async (event) => {
   conversation.push(userMessage);
   // 사용자 메시지를 즉시 화면에 표시합니다.
   appendMessage("user", content);
+  // 최신 대화를 저장해 다음 방문 시 이어서 볼 수 있게 합니다.
+  persistConversation();
 
   // 응답을 기다리는 동안 전송 버튼을 비활성화합니다.
   submitButton.disabled = true;
@@ -272,6 +334,8 @@ form.addEventListener("submit", async (event) => {
       conversation.push(assistantMessage);
       // 답변을 화면에 출력합니다.
       appendMessage("assistant", reply);
+      // 갱신된 대화를 저장합니다.
+      persistConversation();
     } else {
       // 응답이 비어있다면 에러 메시지를 대신 보여줍니다.
       appendMessage("assistant", "미안. 지금은 답변을 가져오지 못했어. 잠시 후 다시 시도해 줄래.");
