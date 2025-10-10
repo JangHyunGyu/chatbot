@@ -197,6 +197,5 @@ form.addEventListener("submit", async (event) => {
     );
   } finally {
     submitButton.disabled = false;
-    questionField.focus();
   }
 });
