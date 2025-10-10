@@ -9,6 +9,8 @@
 	--text-main: #132043;
 	--text-muted: #4a5675;
 	--shadow: 0 20px 40px rgba(19, 32, 67, 0.12);
+	--app-height: 100vh;
+	--keyboard-offset: 0px;
 	font-size: 18px;
 }
 
@@ -30,7 +32,7 @@ body {
 
 .app {
 	width: min(430px, 100%);
-	height: min(820px, calc(100vh - clamp(1rem, 4vw, 3rem)));
+	height: min(820px, calc(var(--app-height, 100vh) - clamp(1rem, 4vw, 3rem)));
 	background: var(--panel);
 	border-radius: 26px;
 	box-shadow: var(--shadow);
@@ -65,7 +67,7 @@ body {
 .app__main {
 	flex: 1;
 	background: var(--surface);
-	padding: 1.2rem 1.1rem;
+	padding: 1.2rem 1.1rem calc(1.2rem + var(--keyboard-offset, 0px));
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
@@ -192,7 +194,7 @@ body {
 }
 
 .composer {
-	padding: 1rem 1.2rem;
+	padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom));
 	background: var(--panel);
 	border-top: 1px solid rgba(47, 107, 255, 0.12);
 	display: flex;

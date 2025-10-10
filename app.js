@@ -5,6 +5,7 @@ const form = document.getElementById("chat-form");
 const questionField = document.getElementById("question");
 const submitButton = document.getElementById("send");
 const messagesList = document.getElementById("messages");
+const root = document.documentElement;
 
 const systemPrompt = {
   role: "system",
@@ -20,11 +21,25 @@ let conversation = [systemPrompt];
 function scrollToBottom({ smooth = true } = {}) {
   const behavior = smooth ? "smooth" : "auto";
 
+  messagesList.scrollTop = messagesList.scrollHeight;
+
   requestAnimationFrame(() => {
-    messagesList.lastElementChild?.scrollIntoView({ behavior, block: "end" });
-    // Fallback to direct scroll positioning to ensure alignment in all browsers
     messagesList.scrollTop = messagesList.scrollHeight;
+    messagesList.lastElementChild?.scrollIntoView({ behavior, block: "end" });
   });
+}
+
+function updateViewportVars() {
+  const viewport = window.visualViewport;
+
+  if (viewport) {
+    const keyboardOffset = Math.max(window.innerHeight - viewport.height - viewport.offsetTop, 0);
+    root.style.setProperty("--app-height", `${viewport.height}px`);
+    root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
+  } else {
+    root.style.setProperty("--app-height", `${window.innerHeight}px`);
+    root.style.setProperty("--keyboard-offset", "0px");
+  }
 }
 
 function createBubble(role, text) {
@@ -99,7 +114,36 @@ function handleComposerResize() {
   questionField.style.height = `${Math.min(questionField.scrollHeight, 180)}px`;
 }
 
+updateViewportVars();
+
+const handleViewportChange = () => {
+  updateViewportVars();
+  scrollToBottom({ smooth: false });
+};
+
+window.addEventListener("resize", handleViewportChange);
+window.addEventListener("orientationchange", handleViewportChange);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", handleViewportChange);
+  window.visualViewport.addEventListener("scroll", handleViewportChange);
+}
+
 questionField.addEventListener("input", handleComposerResize);
+
+questionField.addEventListener("focus", () => {
+  setTimeout(() => {
+    updateViewportVars();
+    scrollToBottom({ smooth: true });
+  }, 120);
+});
+
+questionField.addEventListener("blur", () => {
+  setTimeout(() => {
+    updateViewportVars();
+    scrollToBottom({ smooth: false });
+  }, 120);
+});
 
 questionField.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
