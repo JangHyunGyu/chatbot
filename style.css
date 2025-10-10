@@ -1,177 +1,169 @@
+/* ========================================================================== */
+/* 전역 테마 변수: 색상, 그림자, 동적 높이 값 등을 한곳에서 관리한다.       */
+/* ========================================================================== */
+
 :root {
-	color-scheme: light;
-	--bg: #e9efff;
-	--panel: #ffffff;
-	--surface: #f5f7ff;
-	--primary: #2f6bff;
-	--primary-dark: #1c46d6;
-	--accent: #4c84ff;
-	--text-main: #132043;
-	--text-muted: #4a5675;
-	--shadow: 0 20px 40px rgba(19, 32, 67, 0.12);
-	--app-height: 100vh;
-	--keyboard-offset: 0px;
-	font-size: 18px;
+	color-scheme: light; /* 시스템 모드와 상관없이 밝은 테마를 유지 */
+	--bg: #e9efff; /* 전체 페이지 배경색 */
+	--panel: #ffffff; /* 카드형 패널 기본 배경 */
+	--surface: #f5f7ff; /* 채팅 영역의 은은한 배경 */
+	--primary: #2f6bff; /* 주요 포인트 색상 */
+	--primary-dark: #1c46d6; /* 주요 색상 어두운 톤 */
+	--accent: #4c84ff; /* 보조 포인트 색상 */
+	--text-main: #132043; /* 기본 텍스트 색상 */
+	--text-muted: #4a5675; /* 보조 텍스트 색상 */
+	--shadow: 0 20px 40px rgba(19, 32, 67, 0.12); /* 카드 외곽 그림자 */
+	--app-height: 100vh; /* 자바스크립트에서 갱신하는 앱 높이 */
+	--keyboard-offset: 0px; /* 가상 키보드에 따른 하단 여백 */
+	font-size: 18px; /* 기본 폰트 크기 (반응형에서 조정됨) */
 }
 
+/* 모든 요소의 크기 계산 방식을 border-box로統一해 여백 계산을 단순화한다. */
 * {
 	box-sizing: border-box;
 }
 
+/* 페이지 전체 배경과 가운데 정렬 레이아웃 설정 */
 body {
-	margin: 0;
-	min-height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background: var(--bg);
-	font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-	color: var(--text-main);
-	padding: clamp(0.75rem, 3vw, 2rem);
+	margin: 0; /* 기본 margin 제거 */
+	min-height: 100vh; /* 화면을 꽉 채우도록 최소 높이 지정 */
+	display: flex; /* 중앙 배치를 위한 flex 컨테이너 */
+	justify-content: center; /* 가로 중앙 정렬 */
+	align-items: center; /* 세로 중앙 정렬 */
+	background: var(--bg); /* 테마 배경 색상 사용 */
+	font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; /* 한국어 친화 폰트 */
+	color: var(--text-main); /* 기본 텍스트 색상 설정 */
+	padding: clamp(0.75rem, 3vw, 2rem); /* 화면 크기에 맞춰 바깥 여백 조절 */
 }
 
+/* 모바일 기기 모양의 메인 앱 카드 */
 .app {
-	width: min(430px, 100%);
-	height: min(820px, calc(var(--app-height, 100vh) - clamp(1rem, 4vw, 3rem)));
-	background: var(--panel);
-	border-radius: 26px;
-	box-shadow: var(--shadow);
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	position: relative;
+	width: min(430px, 100%); /* 최대 폭은 430px, 그 이하에서는 화면에 맞춘다 */
+	height: min(820px, calc(var(--app-height, 100vh) - clamp(1rem, 4vw, 3rem))); /* 실제 뷰포트 높이에 맞춰 카드 높이를 제한 */
+	background: var(--panel); /* 카드 배경색 */
+	border-radius: 26px; /* 부드러운 모서리 */
+	box-shadow: var(--shadow); /* 입체감을 주는 그림자 */
+	display: flex; /* 헤더/본문/입력창을 세로로 배치 */
+	flex-direction: column; /* 위에서 아래로 정렬 */
+	overflow: hidden; /* 내용이 넘치지 않도록 잘라냄 */
+	position: relative; /* 오버레이(friend picker) 배치를 위한 기준 */
 }
 
+/* 상단 헤더: 배경 그래디언트와 타이틀을 표현 */
 .app__header {
-	background: linear-gradient(135deg, var(--primary), var(--accent));
-	color: #ffffff;
-	padding: 1.1rem 1.5rem 1rem;
-	text-align: center;
-	position: relative;
-	box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+	background: linear-gradient(135deg, var(--primary), var(--accent)); /* 좌측 상단에서 우측 하단으로 흐르는 포인트 색상 */
+	color: #ffffff; /* 헤더 텍스트는 흰색 */
+	padding: 1.1rem 1.5rem 1rem; /* 위, 좌우, 아래 순의 여백 */
+	text-align: center; /* 제목 중앙 정렬 */
+	position: relative; /* inset box-shadow를 위한 상대 위치 */
+	box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25); /* 헤더 하단에 은은한 하이라이트 */
 }
 
+/* 헤더 안의 타이틀 텍스트 */
 .app__title {
-	margin: 0;
-	font-size: 1.35rem;
-	font-weight: 700;
-	letter-spacing: 0.01em;
+	margin: 0; /* 기본 margin 제거 */
+	font-size: 1.35rem; /* 시각적 강조 크기 */
+	font-weight: 700; /* 굵게 표시 */
+	letter-spacing: 0.01em; /* 약간의 자간 조정 */
 }
 
-.app__status {
-	margin: 0.35rem 0 0;
-	font-size: 0.95rem;
-	opacity: 0.9;
-}
-
-.app__main {
-	flex: 1;
-	background: var(--surface);
-	padding: 1.2rem 1.1rem calc(1.2rem + var(--keyboard-offset, 0px));
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-}
-
-.chat {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 0.9rem;
-	overflow-y: auto;
-	scrollbar-width: thin;
-}
-
-.chat::-webkit-scrollbar {
-	width: 6px;
-}
-
+/* 채팅 로그 스크롤바를 얇고 둥글게 꾸민다 (웹킷 계열 전용) */
 .chat::-webkit-scrollbar-thumb {
-	background: rgba(47, 107, 255, 0.35);
-	border-radius: 999px;
+	background: rgba(47, 107, 255, 0.35); /* 스크롤바 색상 */
+	border-radius: 999px; /* 완전한 캡슐 형태 */
 }
 
+/* 한 줄의 메시지 항목 레이아웃 */
 .message {
-	display: flex;
-	align-items: flex-end;
-	gap: 0.6rem;
+	display: flex; /* 아바타와 말풍선을 가로로 배치 */
+	align-items: flex-end; /* 말풍선 하단을 기준으로 맞춤 */
+	gap: 0.6rem; /* 아바타와 말풍선 간격 */
 }
 
+/* 어시스턴트 메시지는 왼쪽 정렬 */
 .message--assistant {
 	justify-content: flex-start;
 }
 
+/* 사용자 메시지는 오른쪽 정렬 */
 .message--user {
 	justify-content: flex-end;
 }
 
+/* 말풍선 옆에 붙는 동그란 아바타 */
 .message__avatar {
-	width: 38px;
+	width: 38px; /* 아바타 지름 */
 	height: 38px;
-	border-radius: 50%;
-	display: grid;
-	place-items: center;
-	font-size: 1.2rem;
-	flex-shrink: 0;
-	box-shadow: 0 6px 14px rgba(47, 107, 255, 0.15);
-	background: rgba(79, 120, 255, 0.12);
-	color: var(--primary);
+	border-radius: 50%; /* 원형으로 만들기 */
+	display: grid; /* 가운데 정렬을 쉽게 하기 위해 grid 사용 */
+	place-items: center; /* 수평/수직 중앙 정렬 */
+	font-size: 1.2rem; /* 이모지 크기 */
+	flex-shrink: 0; /* 말풍선 너비에 밀려 줄어들지 않도록 고정 */
+	box-shadow: 0 6px 14px rgba(47, 107, 255, 0.15); /* 은은한 그림자 */
+	background: rgba(79, 120, 255, 0.12); /* 기본 배경색 */
+	color: var(--primary); /* 이모지 색상 */
 }
 
+/* 사용자 아바타는 진한 그래디언트와 흰색 텍스트를 사용 */
 .message--user .message__avatar {
 	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
 	color: #ffffff;
 	box-shadow: 0 8px 16px rgba(44, 94, 255, 0.25);
 }
 
+/* 말풍선 컨테이너 */
 .message__bubble {
-	max-width: 75%;
-	padding: 0.85rem 1rem;
-	border-radius: 20px;
-	box-shadow: 0 12px 24px rgba(19, 32, 67, 0.08);
-	background: #ffffff;
-	display: flex;
+	max-width: 75%; /* 너무 넓어지지 않도록 제한 */
+	padding: 0.85rem 1rem; /* 안쪽 여백 */
+	border-radius: 20px; /* 둥근 모서리 */
+	box-shadow: 0 12px 24px rgba(19, 32, 67, 0.08); /* 깊이감 있는 그림자 */
+	background: #ffffff; /* 기본 배경 */
+	display: flex; /* 메타와 본문을 세로로 배치 */
 	flex-direction: column;
-	gap: 0.45rem;
-	position: relative;
-	line-height: 1.6;
-	font-size: 1rem;
+	gap: 0.45rem; /* 메타/본문 사이 간격 */
+	position: relative; /* ::after 꼬리를 배치하기 위한 기준 */
+	line-height: 1.6; /* 가독성 있는 줄간격 */
+	font-size: 1rem; /* 본문 기본 크기 */
 }
 
+/* 말풍선 꼬리 모양 */
 .message__bubble::after {
 	content: "";
 	position: absolute;
 	bottom: 12px;
 	width: 12px;
 	height: 12px;
-	transform: rotate(45deg);
-	background: inherit;
+	transform: rotate(45deg); /* 정사각형을 45도 회전시켜 마름모 형태로 사용 */
+	background: inherit; /* 말풍선과 동일한 색상 유지 */
 }
 
+/* 어시스턴트 말풍선 스타일 */
 .message--assistant .message__bubble {
-	border: 1px solid rgba(82, 108, 223, 0.16);
+	border: 1px solid rgba(82, 108, 223, 0.16); /* 테두리로 구분감 부여 */
 	color: var(--text-main);
 }
 
+/* 어시스턴트 말풍선 꼬리를 왼쪽에 배치 */
 .message--assistant .message__bubble::after {
 	left: -5px;
-	box-shadow: -3px 3px 10px rgba(19, 32, 67, 0.08);
+	box-shadow: -3px 3px 10px rgba(19, 32, 67, 0.08); /* 꼬리에 그림자 덧입힘 */
 }
 
+/* 사용자 말풍선 스타일 */
 .message--user .message__bubble {
 	background: linear-gradient(135deg, var(--primary), var(--primary-dark));
 	color: #ffffff;
-	align-items: flex-end;
+	align-items: flex-end; /* 텍스트와 메타를 오른쪽 끝으로 정렬 */
 	text-align: right;
 }
 
+/* 사용자 말풍선 꼬리를 오른쪽에 배치 */
 .message--user .message__bubble::after {
 	right: -5px;
 	box-shadow: 3px 3px 10px rgba(14, 44, 150, 0.18);
 }
 
+/* 말풍선 상단에 표시되는 화자/시간 등 메타 정보 */
 .message__meta {
 	font-size: 0.78rem;
 	font-weight: 600;
@@ -179,29 +171,34 @@ body {
 	color: rgba(19, 32, 67, 0.55);
 }
 
+/* 사용자 말풍선의 메타는 흰색 대비를 높인다 */
 .message--user .message__meta {
 	color: rgba(255, 255, 255, 0.72);
 }
 
+/* 실제 대화 내용 텍스트 */
 .message__text {
 	margin: 0;
-	white-space: pre-wrap;
+	white-space: pre-wrap; /* 줄바꿈과 공백을 유지하면서 여러 줄을 허용 */
 }
 
+/* "생각중…" 상태를 표시할 때 약간 투명하고 기울임꼴로 보여준다 */
 .message--thinking .message__bubble {
 	opacity: 0.8;
 	font-style: italic;
 }
 
+/* 하단 입력 창 영역 전체 */
 .composer {
-	padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom));
+	padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom)); /* iOS 홈 인디케이터를 고려한 여백 */
 	background: var(--panel);
-	border-top: 1px solid rgba(47, 107, 255, 0.12);
+	border-top: 1px solid rgba(47, 107, 255, 0.12); /* 상단에 얕은 구분선 */
 	display: flex;
 	flex-direction: column;
 	gap: 0.55rem;
 }
 
+/* 스크린리더용 숨김 라벨 (시각적으로는 감춤) */
 .composer__label {
 	position: absolute;
 	width: 1px;
@@ -214,35 +211,40 @@ body {
 	white-space: nowrap;
 }
 
+/* 입력창과 전송 버튼을 가로로 붙이는 래퍼 */
 .composer__field {
 	display: flex;
 	align-items: flex-end;
 	gap: 0.65rem;
 }
 
+/* 자동으로 높이가 늘어나는 텍스트 영역 */
 .composer__input {
-	flex: 1;
+	flex: 1; /* 가용 너비를 모두 차지 */
 	font-size: 1rem;
 	line-height: 1.6;
 	padding: 0.85rem 1.1rem;
-	border-radius: 999px;
+	border-radius: 999px; /* 캡슐 형태 */
 	border: none;
 	background: rgba(47, 107, 255, 0.12);
 	box-shadow: inset 0 0 0 1px rgba(47, 107, 255, 0.18);
-	resize: none;
-	max-height: 160px;
-	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	resize: none; /* 사용자가 수동으로 크기 조절하지 못하게 고정 */
+	max-height: 160px; /* 너무 높아지지 않도록 제한 */
+	transition: border-color 0.2s ease, box-shadow 0.2s ease; /* 포커스 애니메이션 */
 }
 
+/* 포커스 시 외곽선 대신 안쪽 윤곽을 강조 */
 .composer__input:focus {
 	outline: none;
 	box-shadow: inset 0 0 0 2px rgba(47, 107, 255, 0.4);
 }
 
+/* 플레이스홀더 텍스트 색상 */
 .composer__input::placeholder {
 	color: rgba(74, 86, 117, 0.65);
 }
 
+/* 전송 버튼: 둥근 플로팅 버튼 느낌 */
 .composer__send {
 	width: 52px;
 	height: 52px;
@@ -259,18 +261,21 @@ body {
 	transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* 비활성화된 전송 버튼 상태 */
 .composer__send:disabled {
 	opacity: 0.6;
 	box-shadow: none;
 	cursor: wait;
 }
 
+/* 호버나 키보드 포커스 시 미세하게 떠오르는 연출 */
 .composer__send:hover,
 .composer__send:focus-visible {
 	transform: translateY(-1px);
 	box-shadow: 0 16px 28px rgba(44, 94, 255, 0.32);
 }
 
+/* 입력 안내 문구 (필요 시 사용) */
 .composer__help {
 	margin: 0;
 	font-size: 0.85rem;
@@ -278,6 +283,7 @@ body {
 	text-align: center;
 }
 
+/* 서버 통신 중 잠금 상태의 입력창 */
 .composer--locked .composer__input,
 .composer__input:disabled {
 	background: rgba(47, 107, 255, 0.08);
@@ -285,6 +291,7 @@ body {
 	cursor: not-allowed;
 }
 
+/* 잠금 상태의 전송 버튼 */
 .composer--locked .composer__send,
 .composer__send:disabled {
 	opacity: 0.45;
@@ -292,31 +299,35 @@ body {
 	cursor: not-allowed;
 }
 
+/* 잠금 상태에서는 호버 효과 제거 */
 .composer--locked .composer__send:hover,
 .composer--locked .composer__send:focus-visible {
 	transform: none;
 	box-shadow: none;
 }
 
+/* 친구 선택 오버레이: 앱 위를 덮는 반투명 레이어 */
 .friend-picker {
-	position: absolute;
-	inset: 0;
+	position: absolute; /* .app을 기준으로 배치 */
+	inset: 0; /* 상하좌우 모두 0으로 카드 전체 덮기 */
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	padding: 1.5rem;
-	background: rgba(19, 32, 67, 0.55);
-	backdrop-filter: blur(6px);
-	z-index: 10;
-	transition: opacity 0.25s ease, visibility 0.25s ease;
+	background: rgba(19, 32, 67, 0.55); /* 어둡게 덮는 반투명 배경 */
+	backdrop-filter: blur(6px); /* 뒤쪽을 블러 처리해 초점 유지 */
+	z-index: 10; /* 본문 위에 표시 */
+	transition: opacity 0.25s ease, visibility 0.25s ease; /* 표시/숨김 애니메이션 */
 }
 
+/* 숨김 상태 클래스: 투명하게 만들고 포인터 이벤트 차단 */
 .friend-picker--hidden {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
 }
 
+/* 친구 카드 목록을 담는 패널 */
 .friend-picker__panel {
 	width: min(360px, 100%);
 	padding: 1.6rem;
@@ -329,12 +340,14 @@ body {
 	text-align: center;
 }
 
+/* 패널 제목 */
 .friend-picker__title {
 	margin: 0;
 	font-size: 1.3rem;
 	font-weight: 700;
 }
 
+/* 패널 보조 설명 */
 .friend-picker__subtitle {
 	margin: 0;
 	font-size: 0.98rem;
@@ -342,12 +355,14 @@ body {
 	line-height: 1.5;
 }
 
+/* 친구 카드 그리드 배치 */
 .friend-picker__grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 	gap: 1rem;
 }
 
+/* 개별 친구 카드 스타일 */
 .friend-card {
 	border: none;
 	border-radius: 18px;
@@ -363,6 +378,7 @@ body {
 	transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
+/* 카드에 포커스 또는 호버되었을 때 */
 .friend-card:focus-visible,
 .friend-card:hover {
 	transform: translateY(-3px);
@@ -370,16 +386,19 @@ body {
 	outline: none;
 }
 
+/* 선택된 카드 강조 */
 .friend-card--selected {
 	transform: translateY(-3px);
 	box-shadow: 0 18px 32px rgba(47, 107, 255, 0.26);
 	background: linear-gradient(135deg, rgba(47, 107, 255, 0.18), rgba(47, 107, 255, 0.32));
 }
 
+/* 키보드 포커스용 추가 테두리 */
 .friend-card:focus-visible {
 	box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.35);
 }
 
+/* 카드 내부 아바타 원형 영역 */
 .friend-card__avatar {
 	display: grid;
 	place-items: center;
@@ -391,51 +410,58 @@ body {
 	box-shadow: inset 0 0 0 1px rgba(47, 107, 255, 0.2);
 }
 
+/* 카드 제목 텍스트 */
 .friend-card__name {
 	font-size: 1.1rem;
 	font-weight: 700;
 }
 
+/* 카드 부제(짧은 설명) */
 .friend-card__tagline {
 	font-size: 0.9rem;
 	color: var(--text-muted);
 	line-height: 1.4;
 }
 
+/* 하단 도움말 텍스트 */
 .friend-picker__hint {
 	margin: 0;
 	font-size: 0.85rem;
 	color: var(--text-muted);
 }
 
+/* ========================================================================== */
+/* 반응형 조정: 작은 화면에서 여백과 크기를 조절한다.                          */
+/* ========================================================================== */
+
 @media (max-width: 480px) {
 	:root {
-		font-size: 17px;
+		font-size: 17px; /* 전체 폰트 크기를 약간 줄여 화면에 맞춘다 */
 	}
 
 	body {
-		padding: 0;
+		padding: 0; /* 가장자리 padding 제거로 공간 확보 */
 	}
 
 	.app {
-		width: 100%;
-		height: 100vh;
-		border-radius: 0;
+		width: 100%; /* 모바일에서는 가로폭을 꽉 채운다 */
+		height: 100vh; /* 세로도 화면 전체를 사용 */
+		border-radius: 0; /* 모서리를 제거해 자연스러운 풀스크린 */
 	}
 
 	.app__main {
-		padding: 1rem 0.9rem;
+		padding: 1rem 0.9rem; /* 내용 여백을 조금 줄임 */
 	}
 
 	.friend-picker__panel {
-		padding: 1.4rem;
+		padding: 1.4rem; /* 좁은 화면에 맞춰 패널 여백 조정 */
 	}
 
 	.message__bubble {
-		max-width: 82%;
+		max-width: 82%; /* 말풍선 가용 폭을 조금 더 확보 */
 	}
 
 	.composer {
-		padding: 0.9rem 1rem;
+		padding: 0.9rem 1rem; /* 하단 입력 영역 여백 축소 */
 	}
 }
