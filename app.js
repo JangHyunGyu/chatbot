@@ -24,6 +24,8 @@ const isKakaoInApp = /KAKAOTALK/i.test(navigator.userAgent || "");
 // Android Chrome 계열인지 빠르게 확인해 주소창 보정을 적용합니다.
 const userAgent = navigator.userAgent || "";
 const isAndroidChrome = !isKakaoInApp && /Android/i.test(userAgent) && /Chrome/i.test(userAgent);
+// 안드로이드 크롬에서 가상 키보드 활성화 상태를 추적합니다.
+let androidKeyboardActive = false;
 
 if (isKakaoInApp) {
   document.body.classList.add("is-kakao-inapp");
@@ -84,10 +86,19 @@ function updateViewportVars() {
     const rawKeyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
     // 안드로이드 크롬은 주소창 숨김/표시만으로도 높이가 60px 내외로 변하므로, 실키보드보다 작은 변화는 무시합니다.
     const keyboardThreshold = isAndroidChrome ? 140 : 80;
+    if (isAndroidChrome) {
+      if (rawKeyboardOffset > keyboardThreshold) {
+        androidKeyboardActive = true;
+      } else if (androidKeyboardActive && rawKeyboardOffset < 60) {
+        androidKeyboardActive = false;
+      }
+      document.body.classList.toggle("is-android-keyboard", androidKeyboardActive);
+    }
+
     let keyboardOffset = rawKeyboardOffset > keyboardThreshold ? rawKeyboardOffset : 0;
     let appHeight = baselineViewportHeight;
 
-    if (keyboardOffset > 0 && isAndroidChrome) {
+    if (isAndroidChrome && androidKeyboardActive) {
       // 키보드가 올라왔을 때 전체 기기 높이가 줄어든 것처럼 보이도록, 뷰포트 실제 높이를 그대로 사용합니다.
       appHeight = viewportHeight;
       keyboardOffset = 0;
@@ -98,7 +109,7 @@ function updateViewportVars() {
       keyboardOffset = Math.max(Math.min(reducedOffset, scaledOffset), 48);
     }
 
-  const usingReducedViewport = isAndroidChrome && appHeight === viewportHeight;
+  const usingReducedViewport = isAndroidChrome && androidKeyboardActive;
   const topOffset = usingReducedViewport ? 0 : keyboardOffset > 0 ? 0 : viewport.offsetTop || 0;
     root.style.setProperty("--app-height", `${appHeight}px`);
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
