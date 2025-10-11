@@ -29,6 +29,10 @@ if (isKakaoInApp) {
   document.body.classList.add("is-kakao-inapp");
 }
 
+if (isAndroidChrome) {
+  document.body.classList.add("is-android-chrome");
+}
+
 // 시스템 프롬프트는 모델의 기본 역할과 말투를 지정하는 초기 메시지입니다.
 const systemPrompt = {
   // 메시지 역할을 시스템으로 설정합니다.
@@ -77,12 +81,15 @@ function updateViewportVars() {
 
     const viewportHeight = viewport.height;
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
-  const keyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
-  const topOffset = keyboardOffset > 0 ? 0 : viewport.offsetTop || 0;
+  const rawKeyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
+  // 안드로이드 크롬은 주소창 숨김/표시만으로도 높이가 60px 내외로 변하므로, 실키보드보다 작은 변화는 무시합니다.
+  const keyboardThreshold = isAndroidChrome ? 140 : 80;
+    const keyboardOffset = rawKeyboardOffset > keyboardThreshold ? rawKeyboardOffset : 0;
+    const topOffset = keyboardOffset > 0 ? 0 : viewport.offsetTop || 0;
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
-  root.style.setProperty("--viewport-offset-top", isAndroidChrome ? `${topOffset}px` : "0px");
+    root.style.setProperty("--viewport-offset-top", isAndroidChrome ? `${topOffset}px` : "0px");
   } else {
     if (isKakaoInApp) {
       root.style.setProperty("--app-height", `${window.innerHeight}px`);
