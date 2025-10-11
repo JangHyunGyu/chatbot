@@ -87,8 +87,10 @@ function updateViewportVars() {
     let keyboardOffset = rawKeyboardOffset > keyboardThreshold ? rawKeyboardOffset : 0;
 
     if (keyboardOffset > 0 && isAndroidChrome) {
-      // 실제 키보드가 올라왔을 때도 기본 padding과 겹쳐 과도한 여백이 생겨서 조금 덜 밀어올립니다.
-      keyboardOffset = Math.max(keyboardOffset - 90, keyboardOffset * 0.45);
+      // 실제 키보드가 올라올 때 기본 padding과 겹치며 생기는 여백을 줄이기 위해 오프셋을 낮게 보정합니다.
+      const reducedOffset = Math.max(keyboardOffset - 90, 0);
+      const scaledOffset = keyboardOffset * 0.45;
+      keyboardOffset = Math.max(Math.min(reducedOffset, scaledOffset), 48);
     }
     const topOffset = keyboardOffset > 0 ? 0 : viewport.offsetTop || 0;
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
