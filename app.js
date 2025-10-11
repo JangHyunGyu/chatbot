@@ -21,6 +21,9 @@ const STORAGE_KEY = "walkwithme:conversation";
 let baselineViewportHeight = window.innerHeight;
 // 카카오톡 인앱 브라우저 여부를 간단히 판별합니다.
 const isKakaoInApp = /KAKAOTALK/i.test(navigator.userAgent || "");
+// Android Chrome 계열인지 빠르게 확인해 주소창 보정을 적용합니다.
+const userAgent = navigator.userAgent || "";
+const isAndroidChrome = !isKakaoInApp && /Android/i.test(userAgent) && /Chrome/i.test(userAgent);
 
 if (isKakaoInApp) {
   document.body.classList.add("is-kakao-inapp");
@@ -74,11 +77,12 @@ function updateViewportVars() {
 
     const viewportHeight = viewport.height;
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
-    const keyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
+  const keyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
+  const topOffset = keyboardOffset > 0 ? 0 : viewport.offsetTop || 0;
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
-    root.style.setProperty("--viewport-offset-top", `${viewport.offsetTop || 0}px`);
+  root.style.setProperty("--viewport-offset-top", isAndroidChrome ? `${topOffset}px` : "0px");
   } else {
     if (isKakaoInApp) {
       root.style.setProperty("--app-height", `${window.innerHeight}px`);
