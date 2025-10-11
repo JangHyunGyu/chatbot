@@ -81,13 +81,18 @@ function updateViewportVars() {
 
     const viewportHeight = viewport.height;
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
-  const rawKeyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
-  // 안드로이드 크롬은 주소창 숨김/표시만으로도 높이가 60px 내외로 변하므로, 실키보드보다 작은 변화는 무시합니다.
-  const keyboardThreshold = isAndroidChrome ? 140 : 80;
-    const keyboardOffset = rawKeyboardOffset > keyboardThreshold ? rawKeyboardOffset : 0;
+    const rawKeyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
+    // 안드로이드 크롬은 주소창 숨김/표시만으로도 높이가 60px 내외로 변하므로, 실키보드보다 작은 변화는 무시합니다.
+    const keyboardThreshold = isAndroidChrome ? 140 : 80;
+    let keyboardOffset = rawKeyboardOffset > keyboardThreshold ? rawKeyboardOffset : 0;
+
+    if (keyboardOffset > 0 && isAndroidChrome) {
+      // 실제 키보드가 올라왔을 때도 기본 padding과 겹쳐 과도한 여백이 생겨서 조금 덜 밀어올립니다.
+      keyboardOffset = Math.max(keyboardOffset - 90, keyboardOffset * 0.45);
+    }
     const topOffset = keyboardOffset > 0 ? 0 : viewport.offsetTop || 0;
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
-    root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
+  root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
     root.style.setProperty("--viewport-offset-top", isAndroidChrome ? `${topOffset}px` : "0px");
   } else {
