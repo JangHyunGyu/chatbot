@@ -85,11 +85,11 @@ function updateViewportVars() {
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
     const rawKeyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
     // 안드로이드 크롬은 주소창 숨김/표시만으로도 높이가 60px 내외로 변하므로, 실키보드보다 작은 변화는 무시합니다.
-    const keyboardThreshold = isAndroidChrome ? 140 : 80;
+  const keyboardThreshold = isAndroidChrome ? 110 : 80;
     if (isAndroidChrome) {
       if (rawKeyboardOffset > keyboardThreshold) {
         androidKeyboardActive = true;
-      } else if (androidKeyboardActive && rawKeyboardOffset < 60) {
+      } else if (androidKeyboardActive && rawKeyboardOffset < 30) {
         androidKeyboardActive = false;
       }
       document.body.classList.toggle("is-android-keyboard", androidKeyboardActive);
