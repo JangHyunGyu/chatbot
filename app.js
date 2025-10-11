@@ -68,6 +68,7 @@ function updateViewportVars() {
       root.style.setProperty("--app-height", `${viewport.height}px`);
       root.style.setProperty("--keyboard-offset", "0px");
       root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
+      root.style.setProperty("--viewport-offset-top", "0px");
       return;
     }
 
@@ -77,11 +78,13 @@ function updateViewportVars() {
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
+    root.style.setProperty("--viewport-offset-top", `${viewport.offsetTop || 0}px`);
   } else {
     if (isKakaoInApp) {
       root.style.setProperty("--app-height", `${window.innerHeight}px`);
       root.style.setProperty("--keyboard-offset", "0px");
       root.style.setProperty("--viewport-offset-left", "0px");
+      root.style.setProperty("--viewport-offset-top", "0px");
       return;
     }
 
@@ -90,6 +93,7 @@ function updateViewportVars() {
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--viewport-offset-left", "0px");
+    root.style.setProperty("--viewport-offset-top", "0px");
   }
 }
 
