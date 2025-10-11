@@ -17,6 +17,8 @@ const messagesList = document.getElementById("messages");
 const root = document.documentElement;
 // 로컬 스토리지에 대화를 저장할 때 사용할 키 값을 정의합니다.
 const STORAGE_KEY = "walkwithme:conversation";
+// 주소창 애니메이션과 키보드 등장 시 기준이 되는 뷰포트 높이를 추적합니다.
+let baselineViewportHeight = window.innerHeight;
 
 // 시스템 프롬프트는 모델의 기본 역할과 말투를 지정하는 초기 메시지입니다.
 const systemPrompt = {
@@ -55,17 +57,18 @@ function updateViewportVars() {
   const viewport = window.visualViewport;
 
   if (viewport) {
-    // 키보드가 올라왔을 때의 높이를 계산합니다.
-    const keyboardOffset = Math.max(window.innerHeight - viewport.height - viewport.offsetTop, 0);
-    // 화면 전체 높이를 CSS 커스텀 속성으로 저장합니다.
-    root.style.setProperty("--app-height", `${viewport.height}px`);
-    // 키보드 높이만큼 하단 패딩을 확보할 수 있도록 CSS 변수에 설정합니다.
+    const viewportHeight = viewport.height;
+    baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
+    const keyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
+    root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
+    root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
   } else {
-    // visualViewport가 없는 환경에서는 기본 윈도우 크기를 사용합니다.
-    root.style.setProperty("--app-height", `${window.innerHeight}px`);
-    // 키보드 오프셋을 0으로 초기화합니다.
-    root.style.setProperty("--keyboard-offset", "0px");
+    baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight);
+    const keyboardOffset = Math.max(baselineViewportHeight - window.innerHeight, 0);
+    root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
+    root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
+    root.style.setProperty("--viewport-offset-left", "0px");
   }
 }
 
