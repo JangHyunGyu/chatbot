@@ -26,6 +26,7 @@ const userAgent = navigator.userAgent || "";
 const isAndroidChrome = !isKakaoInApp && /Android/i.test(userAgent) && /Chrome/i.test(userAgent);
 // 안드로이드 크롬에서 가상 키보드 활성화 상태를 추적합니다.
 let androidKeyboardActive = false;
+let androidKeyboardViewportHeight = null;
 
 if (isKakaoInApp) {
   document.body.classList.add("is-kakao-inapp");
@@ -85,13 +86,26 @@ function updateViewportVars() {
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
     const rawKeyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
     // 안드로이드 크롬은 주소창 숨김/표시만으로도 높이가 60px 내외로 변하므로, 실키보드보다 작은 변화는 무시합니다.
-  const keyboardThreshold = isAndroidChrome ? 110 : 80;
+    const keyboardThreshold = isAndroidChrome ? 110 : 80;
     if (isAndroidChrome) {
+      const wasActive = androidKeyboardActive;
       if (rawKeyboardOffset > keyboardThreshold) {
         androidKeyboardActive = true;
       } else if (androidKeyboardActive && rawKeyboardOffset < 30) {
         androidKeyboardActive = false;
       }
+
+      if (androidKeyboardActive) {
+        // 키보드가 활성화된 최초 시점의 뷰포트 높이를 기록하고, 이후에는 더 작은 값만 허용해 레이아웃이 길어지지 않도록 고정합니다.
+        if (!wasActive || androidKeyboardViewportHeight === null) {
+          androidKeyboardViewportHeight = viewportHeight;
+        } else {
+          androidKeyboardViewportHeight = Math.min(androidKeyboardViewportHeight, viewportHeight);
+        }
+      } else {
+        androidKeyboardViewportHeight = null;
+      }
+
       document.body.classList.toggle("is-android-keyboard", androidKeyboardActive);
     }
 
@@ -100,7 +114,8 @@ function updateViewportVars() {
 
     if (isAndroidChrome && androidKeyboardActive) {
       // 키보드가 올라왔을 때 전체 기기 높이가 줄어든 것처럼 보이도록, 뷰포트 실제 높이를 그대로 사용합니다.
-      appHeight = viewportHeight;
+  const lockedHeight = androidKeyboardViewportHeight ?? viewportHeight;
+  appHeight = Math.min(lockedHeight, viewportHeight);
       keyboardOffset = 0;
     } else if (keyboardOffset > 0) {
       // 다른 브라우저에서는 기존과 동일하게 살짝 덜 밀어 올려 과도한 여백을 방지합니다.
