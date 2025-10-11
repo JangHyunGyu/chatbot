@@ -19,6 +19,12 @@ const root = document.documentElement;
 const STORAGE_KEY = "walkwithme:conversation";
 // 주소창 애니메이션과 키보드 등장 시 기준이 되는 뷰포트 높이를 추적합니다.
 let baselineViewportHeight = window.innerHeight;
+// 카카오톡 인앱 브라우저 여부를 간단히 판별합니다.
+const isKakaoInApp = /KAKAOTALK/i.test(navigator.userAgent || "");
+
+if (isKakaoInApp) {
+  document.body.classList.add("is-kakao-inapp");
+}
 
 // 시스템 프롬프트는 모델의 기본 역할과 말투를 지정하는 초기 메시지입니다.
 const systemPrompt = {
@@ -57,6 +63,14 @@ function updateViewportVars() {
   const viewport = window.visualViewport;
 
   if (viewport) {
+    if (isKakaoInApp) {
+      // 카카오 인앱 브라우저는 키보드 공간을 자체 처리하므로 추가 보정이 필요 없습니다.
+      root.style.setProperty("--app-height", `${viewport.height}px`);
+      root.style.setProperty("--keyboard-offset", "0px");
+      root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
+      return;
+    }
+
     const viewportHeight = viewport.height;
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight, viewportHeight);
     const keyboardOffset = Math.max(baselineViewportHeight - viewportHeight, 0);
@@ -64,6 +78,13 @@ function updateViewportVars() {
     root.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
     root.style.setProperty("--viewport-offset-left", `${viewport.offsetLeft || 0}px`);
   } else {
+    if (isKakaoInApp) {
+      root.style.setProperty("--app-height", `${window.innerHeight}px`);
+      root.style.setProperty("--keyboard-offset", "0px");
+      root.style.setProperty("--viewport-offset-left", "0px");
+      return;
+    }
+
     baselineViewportHeight = Math.max(baselineViewportHeight, window.innerHeight);
     const keyboardOffset = Math.max(baselineViewportHeight - window.innerHeight, 0);
     root.style.setProperty("--app-height", `${baselineViewportHeight}px`);
