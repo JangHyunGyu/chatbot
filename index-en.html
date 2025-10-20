@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Walk with me</title>
-		<meta name="description" content="Walk with me - Choose a friend and share how you're feeling." />
+		<meta name="description" content="Walk with me - Choose a caring friend and share how you're feeling." />
 		<meta property="og:title" content="Walk with me" />
-		<meta property="og:description" content="Choose a caring friend to chat with and feel heard." />
+		<meta property="og:description" content="Pick a gentle companion, talk through your day, and feel heard." />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="icon" type="image/svg+xml" href="assets/images/archerlab_logo.svg">
@@ -22,8 +22,8 @@
 				"name": "Walk with me",
 				"applicationCategory": "LifestyleApplication",
 				"operatingSystem": "Web",
-				"url": "https://walkwithme.archerlab.dev/",
-				"description": "Walk with me는 감정 상태를 나누고 대화를 이어가는 웹 기반 동반자 챗봇입니다.",
+				"url": "https://walkwithme.archerlab.dev/index-en.html",
+				"description": "Walk with me is a web-based companion chatbot that listens first and helps you process emotions.",
 				"creator": {
 					"@type": "Organization",
 					"name": "ArcherLab",
@@ -32,7 +32,7 @@
 				"offers": {
 					"@type": "Offer",
 					"price": "0",
-					"priceCurrency": "KRW"
+					"priceCurrency": "USD"
 				}
 			}
 		</script>
@@ -44,27 +44,27 @@
 					<img src="assets/images/archerlab_mini_logo.png" alt="ArcherLab" class="app__brand-logo" loading="lazy">
 				</a>
 				<div class="app__language-switch">
-					<select id="language-select-chat" aria-label="언어 선택" data-language-switch>
-						<option value="index.html" data-language-code="ko" selected>한국어</option>
-						<option value="index-en.html" data-language-code="en">English</option>
+					<select id="language-select-chat-en" aria-label="Language" data-language-switch>
+						<option value="index.html" data-language-code="ko">한국어</option>
+						<option value="index-en.html" data-language-code="en" selected>English</option>
 					</select>
 				</div>
 			</header>
 
 			<main class="app__main" id="main" role="main">
-				<ul id="messages" class="chat" aria-live="polite" aria-label="대화 내용">
+				<ul id="messages" class="chat" aria-live="polite" aria-label="Conversation">
 					<li class="message message--assistant">
 						<span class="message__avatar" aria-hidden="true">😊</span>
 						<div class="message__bubble">
-							<span class="message__meta">친구</span>
-							<p class="message__text">안녕! 궁금한게 있거나 상담하고 싶은게 있으면 편하게 얘기해 줘.</p>
+							<span class="message__meta">Friend</span>
+							<p class="message__text">Hi there! I'm here whenever you want to talk. Tell me what's on your mind.</p>
 						</div>
 					</li>
 				</ul>
 			</main>
 
 			<form id="chat-form" class="composer" autocomplete="off">
-				<label class="composer__label" for="question">메시지 입력</label>
+				<label class="composer__label" for="question">Type a message</label>
 				<div class="composer__field">
 					<textarea
 						id="question"
@@ -72,10 +72,10 @@
 						name="question"
 						rows="1"
 						spellcheck="false"
-						placeholder="메시지를 입력해주세요..."
+						placeholder="Write your message here..."
 						required
 					></textarea>
-					<button type="submit" id="send" class="composer__send" aria-label="메시지 보내기">
+					<button type="submit" id="send" class="composer__send" aria-label="Send message">
 						<span aria-hidden="true">➤</span>
 					</button>
 				</div>

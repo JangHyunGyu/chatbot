@@ -15,6 +15,10 @@ const submitButton = document.getElementById("send");
 const messagesList = document.getElementById("messages");
 // 루트 문서 요소를 참조하여 CSS 커스텀 속성을 제어합니다.
 const root = document.documentElement;
+// 언어 전환 셀렉트 요소를 모두 선택합니다.
+const languageSelects = Array.from(document.querySelectorAll("[data-language-switch]"));
+// 언어 설정을 저장할 때 사용할 키입니다.
+const LANGUAGE_STORAGE_KEY = "archerlab:language";
 // 로컬 스토리지에 대화를 저장할 때 사용할 키 값을 정의합니다.
 const STORAGE_KEY = "walkwithme:conversation";
 // 주소창 애니메이션과 키보드 등장 시 기준이 되는 뷰포트 높이를 추적합니다.
@@ -28,6 +32,148 @@ const isAndroidChrome = !isKakaoInApp && /Android/i.test(userAgent) && /Chrome/i
 let androidKeyboardActive = false;
 let androidKeyboardViewportHeight = null;
 
+const normalizeLanguage = (value) => {
+  if (!value || typeof value !== "string") {
+    return null;
+  }
+  const lowered = value.toLowerCase();
+  if (lowered.startsWith("ko")) {
+    return "ko";
+  }
+  if (lowered.startsWith("en")) {
+    return "en";
+  }
+  return null;
+};
+
+const getStoredLanguage = () => {
+  try {
+    return localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  } catch (error) {
+    return null;
+  }
+};
+
+const setStoredLanguage = (code) => {
+  if (!code) {
+    return;
+  }
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, code);
+  } catch (error) {
+    // 저장이 불가능한 환경에서는 조용히 무시합니다.
+  }
+};
+
+const findOptionByLanguage = (select, languageCode) => {
+  if (!select || !languageCode) {
+    return null;
+  }
+  return (
+    Array.from(select.options || []).find((option) =>
+      normalizeLanguage(option.dataset?.languageCode || option.value) === languageCode
+    ) || null
+  );
+};
+
+const getSelectedOption = (select) => {
+  if (!select) {
+    return null;
+  }
+  if (select.selectedOptions && select.selectedOptions.length) {
+    return select.selectedOptions[0];
+  }
+  const index = typeof select.selectedIndex === "number" ? select.selectedIndex : -1;
+  if (index < 0 || !select.options || !select.options.length) {
+    return null;
+  }
+  return select.options[index] || null;
+};
+
+const pageLanguage = normalizeLanguage(document.documentElement?.lang || "");
+const storedLanguage = normalizeLanguage(getStoredLanguage());
+const activeLanguage = pageLanguage || storedLanguage || "en";
+
+languageSelects.forEach((select) => {
+  const optionForCurrent = findOptionByLanguage(select, pageLanguage);
+  if (optionForCurrent) {
+    select.value = optionForCurrent.value;
+    return;
+  }
+  const optionForStored = findOptionByLanguage(select, storedLanguage);
+  if (optionForStored) {
+    select.value = optionForStored.value;
+  }
+});
+
+if (storedLanguage && pageLanguage && storedLanguage !== pageLanguage) {
+  const redirectSelect = languageSelects[0] || null;
+  const redirectOption = findOptionByLanguage(redirectSelect, storedLanguage);
+  if (redirectOption) {
+    setStoredLanguage(storedLanguage);
+    window.location.replace(redirectOption.value);
+  }
+}
+
+if (!storedLanguage && activeLanguage) {
+  setStoredLanguage(activeLanguage);
+}
+
+languageSelects.forEach((select) => {
+  select.addEventListener("change", (event) => {
+    const target = event.target;
+    const destination = target?.value;
+    const selectedOption = getSelectedOption(target);
+    const selectedLanguageCode = normalizeLanguage(
+      selectedOption?.dataset?.languageCode || selectedOption?.value || ""
+    );
+    if (selectedLanguageCode) {
+      setStoredLanguage(selectedLanguageCode);
+    }
+    if (!destination) {
+      return;
+    }
+    window.location.href = destination;
+  });
+});
+
+const LOCALE_STRINGS = {
+  ko: {
+    systemPrompt: [
+      "당신은 노인분들을 따뜻하게 위로하고 경청하는 친근한 친구이자 모든분야 박사급 전문가입니다.",
+      "대화는 반말을 사용하고, 상대의 이름·나이·가족·건강 정보 등 이전에 들은 사실을 기억해 이어서 이야기하세요.",
+      "답변은 3~4문장으로 차분하게 마무리 질문을 포함하세요."
+    ].join(" "),
+    metaUser: "나",
+    metaAssistant: "친구",
+    lockedPlaceholder: "친구가 답변을 생각하고 있어. 잠시 기다려줘",
+    thinkingMessage: "생각중…",
+    fallbackError: "미안. 지금은 답변을 가져오지 못했어. 잠시 후 다시 시도해 줄래.",
+    networkError: "네트워크 연결이 잠시 끊어진 것 같아요. 다시 시도해 주시겠어요?",
+    genericErrorPrefix: "죄송해요. 오류가 발생했어요:",
+    storageSaveWarning: "대화를 저장하지 못했어요:",
+    storageLoadWarning: "저장된 대화를 불러오지 못했어요:"
+  },
+  en: {
+    systemPrompt: [
+      "You are a warm, attentive friend and a doctorate-level expert in every field.",
+      "Speak in casual English, remember names, age, family, and health details shared earlier, and weave them back into the conversation.",
+      "Answer in three to four calm sentences and finish with a gentle follow-up question."
+    ].join(" "),
+    metaUser: "Me",
+    metaAssistant: "Friend",
+    lockedPlaceholder: "Your friend is thinking. Please hold on.",
+    thinkingMessage: "Thinking…",
+    fallbackError: "Sorry, I couldn't fetch a reply just now. Could you try again in a moment?",
+    networkError: "It looks like the connection dropped for a second. Please try again.",
+    genericErrorPrefix: "Sorry, something went wrong:",
+    storageSaveWarning: "Failed to store the conversation:",
+    storageLoadWarning: "Could not restore the saved conversation:"
+  }
+};
+
+const localeStrings = LOCALE_STRINGS[activeLanguage] || LOCALE_STRINGS.en;
+
 if (isKakaoInApp) {
   document.body.classList.add("is-kakao-inapp");
 }
@@ -38,14 +184,10 @@ if (isAndroidChrome) {
 
 // 시스템 프롬프트는 모델의 기본 역할과 말투를 지정하는 초기 메시지입니다.
 const systemPrompt = {
-  // 메시지 역할을 시스템으로 설정합니다.
-  role: "system",
-  // 여러 안내 문장을 배열로 정의한 후 join으로 하나의 문자열로 합칩니다.
-  content: [
-    "당신은 노인분들을 따뜻하게 위로하고 경청하는 친근한 친구이자 모든분야 박사급 전문가입니다.",
-    "대화는 반말을 사용하고, 상대의 이름·나이·가족·건강 정보 등 이전에 들은 사실을 기억해 이어서 이야기하세요.",
-    "답변은 3~4문장으로 차분하게 마무리 질문을 포함하세요.",
-  ].join(" "),
+	// 메시지 역할을 시스템으로 설정합니다.
+	role: "system",
+	// 지역화된 지침 문자열을 사용합니다.
+	content: localeStrings.systemPrompt,
 };
 
 // 현재까지의 대화를 배열로 보관하며 시스템 프롬프트로 초기화합니다.
@@ -176,8 +318,8 @@ function createBubble(role, text) {
   // 말풍선 상단에 표시될 화자 이름을 span 요소로 만듭니다.
   const meta = document.createElement("span");
   meta.className = "message__meta";
-  // 사용자일 때는 "나", 친구일 때는 "친구"를 표시합니다.
-  meta.textContent = role === "user" ? "나" : "친구";
+  // 현재 언어에 맞춰 화자 레이블을 표시합니다.
+  meta.textContent = role === "user" ? localeStrings.metaUser : localeStrings.metaAssistant;
 
   // 실제 메시지 텍스트를 담을 p 요소를 생성합니다.
   const body = document.createElement("p");
@@ -223,7 +365,7 @@ function persistConversation() {
     );
   } catch (error) {
     // 저장 중 문제가 생겨도 앱 동작은 유지하고 콘솔에만 경고합니다.
-    console.warn("대화를 저장하지 못했어요:", error);
+  console.warn(localeStrings.storageSaveWarning, error);
   }
 }
 
@@ -258,7 +400,7 @@ function hydrateConversation() {
 
     scrollToBottom({ smooth: false });
   } catch (error) {
-    console.warn("저장된 대화를 불러오지 못했어요:", error);
+  console.warn(localeStrings.storageLoadWarning, error);
   }
 }
 
@@ -391,7 +533,7 @@ form.addEventListener("submit", async (event) => {
   // 생각중 상태에서는 입력창 자체도 비활성화해 추가 입력을 막습니다.
   questionField.disabled = true;
   // 사용자가 기다리는 상황임을 안내하는 placeholder 문구로 교체합니다.
-  questionField.setAttribute("placeholder", "친구가 답변을 생각하고 있어. 잠시 기다려줘");
+  questionField.setAttribute("placeholder", localeStrings.lockedPlaceholder);
   // 잠금 상태 스타일을 적용해 사용자에게 입력 불가임을 알립니다.
   form.classList.add("composer--locked");
   // textarea 내용을 비우고 높이를 다시 계산합니다.
@@ -399,7 +541,7 @@ form.addEventListener("submit", async (event) => {
   handleComposerResize();
 
   // "생각중" 상태를 나타내는 임시 말풍선을 만듭니다.
-  const thinkingBubble = createBubble("assistant", "생각중…");
+  const thinkingBubble = createBubble("assistant", localeStrings.thinkingMessage);
   // 스타일 구분을 위해 생각중 클래스를 부여합니다.
   thinkingBubble.classList.add("message--thinking");
   // 임시 말풍선을 메시지 목록에 추가합니다.
@@ -423,7 +565,7 @@ form.addEventListener("submit", async (event) => {
       persistConversation();
     } else {
       // 응답이 비어있다면 에러 메시지를 대신 보여줍니다.
-      appendMessage("assistant", "미안. 지금은 답변을 가져오지 못했어. 잠시 후 다시 시도해 줄래.");
+  appendMessage("assistant", localeStrings.fallbackError);
     }
   } catch (error) {
     // 오류가 나면 임시 말풍선을 제거하여 화면을 정리합니다.
@@ -436,8 +578,8 @@ form.addEventListener("submit", async (event) => {
     appendMessage(
       "assistant",
       error.name === "AbortError"
-        ? "네트워크 연결이 잠시 끊어진 것 같아요. 다시 시도해 주시겠어요?"
-        : `죄송해요. 오류가 발생했어요: ${error.message}`
+  ? localeStrings.networkError
+  : `${localeStrings.genericErrorPrefix} ${error.message}`
     );
   } finally {
     // 요청 완료 후 전송 버튼을 다시 활성화합니다.
