@@ -92,7 +92,7 @@ const getSelectedOption = (select) => {
 
 const pageLanguage = normalizeLanguage(document.documentElement?.lang || "");
 const storedLanguage = normalizeLanguage(getStoredLanguage());
-const activeLanguage = pageLanguage || storedLanguage || "en";
+const activeLanguage = storedLanguage || pageLanguage || "en";
 
 languageSelects.forEach((select) => {
   const optionForCurrent = findOptionByLanguage(select, pageLanguage);
@@ -118,6 +118,37 @@ if (storedLanguage && pageLanguage && storedLanguage !== pageLanguage) {
 if (!storedLanguage && activeLanguage) {
   setStoredLanguage(activeLanguage);
 }
+
+const languageLinkTargets = {
+  main: {
+    ko: "https://archerlab.dev",
+    en: "https://archerlab.dev/index-en.html"
+  }
+};
+
+const syncLanguageLinks = () => {
+  const nodes = document.querySelectorAll("[data-language-link][data-link-key]");
+  if (!nodes.length) {
+    return;
+  }
+  const languageCode = activeLanguage || "ko";
+  nodes.forEach((node) => {
+    const linkKey = node.dataset?.linkKey;
+    if (!linkKey) {
+      return;
+    }
+    const targets = languageLinkTargets[linkKey];
+    if (!targets) {
+      return;
+    }
+    const href = targets[languageCode] || targets.en || targets.ko;
+    if (href) {
+      node.href = href;
+    }
+  });
+};
+
+syncLanguageLinks();
 
 languageSelects.forEach((select) => {
   select.addEventListener("change", (event) => {
