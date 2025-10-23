@@ -92,7 +92,7 @@ const getSelectedOption = (select) => {
 
 const pageLanguage = normalizeLanguage(document.documentElement?.lang || "");
 const storedLanguage = normalizeLanguage(getStoredLanguage());
-const activeLanguage = storedLanguage || pageLanguage || "en";
+const activeLanguage = pageLanguage || storedLanguage || "en";
 
 languageSelects.forEach((select) => {
   const optionForCurrent = findOptionByLanguage(select, pageLanguage);
