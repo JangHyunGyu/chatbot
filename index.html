@@ -25,22 +25,104 @@
 		<script type="application/ld+json">
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareApplication",
-				"name": "Walk with me",
-				"applicationCategory": "LifestyleApplication",
-				"operatingSystem": "Web",
-				"url": "https://walkwithme.archerlab.dev/",
-				"description": "Walk with me는 감정 상태를 나누고 대화를 이어가는 웹 기반 동반자 챗봇입니다.",
-				"creator": {
-					"@type": "Organization",
-					"name": "ArcherLab",
-					"url": "https://archerlab.dev/"
-				},
-				"offers": {
-					"@type": "Offer",
-					"price": "0",
-					"priceCurrency": "KRW"
-				}
+				"@graph": [
+					{
+						"@type": ["SoftwareApplication", "WebApplication"],
+						"@id": "https://walkwithme.archerlab.dev/#app",
+						"name": "Walk with me",
+						"alternateName": "Walk with me 감정 케어 챗봇",
+						"url": "https://walkwithme.archerlab.dev/",
+						"inLanguage": "ko-KR",
+						"applicationCategory": "https://schema.org/LifestyleApplication",
+						"applicationSubCategory": "MentalHealthApplication",
+						"applicationSuite": "ArcherLab Experimental Apps",
+						"operatingSystem": "Web",
+						"description": "Walk with me는 감정 상태를 안전하게 나누고 대화로 정리하도록 돕는 웹 기반 동반자 챗봇입니다.",
+						"keywords": [
+							"감정 챗봇",
+							"AI 친구",
+							"마음 상담",
+							"스트레스 케어"
+						],
+						"softwareVersion": "2025.10",
+						"isAccessibleForFree": true,
+						"browserRequirements": "Requires a modern browser with JavaScript enabled",
+						"featureList": [
+							"감정 케어에 최적화된 대화 템플릿",
+							"한국어·영어 전환 및 접근성 대응 UI",
+							"대화 내용 최대 12쌍 로컬 저장"
+						],
+						"audience": {
+							"@type": "PeopleAudience",
+							"audienceType": "성인 이용자",
+							"name": "스트레스 완화를 원하는 사용자"
+						},
+						"creator": {
+							"@id": "https://walkwithme.archerlab.dev/#organization"
+						},
+						"publisher": {
+							"@id": "https://walkwithme.archerlab.dev/#organization"
+						},
+						"provider": {
+							"@id": "https://walkwithme.archerlab.dev/#organization"
+						},
+						"offers": {
+							"@type": "Offer",
+							"availability": "https://schema.org/InStock",
+							"price": "0",
+							"priceCurrency": "KRW"
+						},
+						"potentialAction": {
+							"@type": "CommunicateAction",
+							"target": {
+								"@type": "EntryPoint",
+								"urlTemplate": "https://walkwithme.archerlab.dev/#main",
+								"inLanguage": "ko-KR"
+							},
+							"result": {
+								"@type": "Thing",
+								"name": "AI 감정 케어 대화"
+							}
+						},
+						"sameAs": [
+							"https://archerlab.dev/",
+							"https://github.com/JangHyunGyu"
+						]
+					},
+					{
+						"@type": "Organization",
+						"@id": "https://walkwithme.archerlab.dev/#organization",
+						"name": "ArcherLab",
+						"url": "https://archerlab.dev/",
+						"logo": {
+							"@type": "ImageObject",
+							"url": "https://walkwithme.archerlab.dev/assets/images/archerlab_mini_logo.png"
+						},
+						"sameAs": [
+							"https://itstory.archerlab.dev/",
+							"https://github.com/JangHyunGyu"
+						],
+						"contactPoint": {
+							"@type": "ContactPoint",
+							"contactType": "customer support",
+							"email": "hyungyu@archerlab.dev",
+							"availableLanguage": ["ko", "en"]
+						}
+					},
+					{
+						"@type": "WebSite",
+						"@id": "https://walkwithme.archerlab.dev/#website",
+						"name": "Walk with me",
+						"url": "https://walkwithme.archerlab.dev/",
+						"inLanguage": "ko-KR",
+						"publisher": {
+							"@id": "https://walkwithme.archerlab.dev/#organization"
+						},
+						"about": {
+							"@id": "https://walkwithme.archerlab.dev/#app"
+						}
+					}
+				]
 			}
 		</script>
 	</head>

@@ -25,22 +25,104 @@
 		<script type="application/ld+json">
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareApplication",
-				"name": "Walk with me",
-				"applicationCategory": "LifestyleApplication",
-				"operatingSystem": "Web",
-				"url": "https://walkwithme.archerlab.dev/index-en.html",
-				"description": "Walk with me is a web-based companion chatbot that listens first and helps you process emotions.",
-				"creator": {
-					"@type": "Organization",
-					"name": "ArcherLab",
-					"url": "https://archerlab.dev/"
-				},
-				"offers": {
-					"@type": "Offer",
-					"price": "0",
-					"priceCurrency": "USD"
-				}
+				"@graph": [
+					{
+						"@type": ["SoftwareApplication", "WebApplication"],
+						"@id": "https://walkwithme.archerlab.dev/index-en.html#app",
+						"name": "Walk with me",
+						"alternateName": "Walk with me companion chatbot",
+						"url": "https://walkwithme.archerlab.dev/index-en.html",
+						"inLanguage": "en",
+						"applicationCategory": "https://schema.org/LifestyleApplication",
+						"applicationSubCategory": "MentalHealthApplication",
+						"applicationSuite": "ArcherLab Experimental Apps",
+						"operatingSystem": "Web",
+						"description": "Walk with me is a web-based companion chatbot that offers gentle emotional support and reflective prompts.",
+						"keywords": [
+							"empathy chatbot",
+							"AI friend",
+							"emotional support",
+							"stress relief"
+						],
+						"softwareVersion": "2025.10",
+						"isAccessibleForFree": true,
+						"browserRequirements": "Requires a modern browser with JavaScript enabled",
+						"featureList": [
+							"Conversation templates tuned for emotional care",
+							"Responsive UI with bilingual switching",
+							"Stores up to 12 user/assistant exchanges locally"
+						],
+						"audience": {
+							"@type": "PeopleAudience",
+							"audienceType": "Adults",
+							"name": "People seeking gentle emotional support"
+						},
+						"creator": {
+							"@id": "https://walkwithme.archerlab.dev/index-en.html#organization"
+						},
+						"publisher": {
+							"@id": "https://walkwithme.archerlab.dev/index-en.html#organization"
+						},
+						"provider": {
+							"@id": "https://walkwithme.archerlab.dev/index-en.html#organization"
+						},
+						"offers": {
+							"@type": "Offer",
+							"availability": "https://schema.org/InStock",
+							"price": "0",
+							"priceCurrency": "USD"
+						},
+						"potentialAction": {
+							"@type": "CommunicateAction",
+							"target": {
+								"@type": "EntryPoint",
+								"urlTemplate": "https://walkwithme.archerlab.dev/index-en.html#main",
+								"inLanguage": "en"
+							},
+							"result": {
+								"@type": "Thing",
+								"name": "Guided emotional support chat"
+							}
+						},
+						"sameAs": [
+							"https://archerlab.dev/index-en.html",
+							"https://github.com/JangHyunGyu"
+						]
+					},
+					{
+						"@type": "Organization",
+						"@id": "https://walkwithme.archerlab.dev/index-en.html#organization",
+						"name": "ArcherLab",
+						"url": "https://archerlab.dev/index-en.html",
+						"logo": {
+							"@type": "ImageObject",
+							"url": "https://walkwithme.archerlab.dev/assets/images/archerlab_mini_logo.png"
+						},
+						"sameAs": [
+							"https://itstory.archerlab.dev/index-en.html",
+							"https://github.com/JangHyunGyu"
+						],
+						"contactPoint": {
+							"@type": "ContactPoint",
+							"contactType": "customer support",
+							"email": "hyungyu@archerlab.dev",
+							"availableLanguage": ["ko", "en"]
+						}
+					},
+					{
+						"@type": "WebSite",
+						"@id": "https://walkwithme.archerlab.dev/index-en.html#website",
+						"name": "Walk with me",
+						"url": "https://walkwithme.archerlab.dev/index-en.html",
+						"inLanguage": "en",
+						"publisher": {
+							"@id": "https://walkwithme.archerlab.dev/index-en.html#organization"
+						},
+						"about": {
+							"@id": "https://walkwithme.archerlab.dev/index-en.html#app"
+						}
+					}
+				]
 			}
 		</script>
 	</head>
